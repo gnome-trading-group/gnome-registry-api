@@ -1,25 +1,13 @@
 import { Client } from 'pg';
-import * as AWS from 'aws-sdk';
 
 export async function connectDatabase() {
-  const dbSecretArn = process.env.DATABASE_SECRET_ARN;
+  const dbSecretJson = process.env.DATABASE_SECRET_JSON;
 
-  if (!dbSecretArn) {
+  if (!dbSecretJson) {
     throw new Error('Missing required environment variables');
   }
 
-  const secretManager = new AWS.SecretsManager();
-  const secretParams: AWS.SecretsManager.GetSecretValueRequest = {
-    SecretId: dbSecretArn,
-  };
-  const dbSecret = await secretManager.getSecretValue(secretParams).promise();
-  const secretString = dbSecret.SecretString;
-
-  if (!secretString) {
-    throw new Error(`Unable to find secret using arn: ${dbSecretArn}`);
-  }
-
-  const { password, dbname, port, host, username } = JSON.parse(secretString);
+  const { password, dbname, port, host, username } = JSON.parse(dbSecretJson);
 
   const client = new Client({
     user: username,

@@ -59,12 +59,6 @@ export class DatabaseStack extends cdk.Stack {
       `Allow port ${port} for database connection only within the VPC`
     );
 
-    const secretsEndpoint = new ec2.InterfaceVpcEndpoint(this, "SecretsEndpoint", {
-      vpc: this.vpc,
-      service: ec2.InterfaceVpcEndpointAwsService.SECRETS_MANAGER,
-      privateDnsEnabled: true,
-    });
-
     const parameterGroup = new rds.ParameterGroup(
       this,
       'ClusterParameterGroup',

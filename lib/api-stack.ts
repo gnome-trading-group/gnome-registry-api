@@ -10,7 +10,6 @@ import { Runtime } from 'aws-cdk-lib/aws-lambda';
 
 interface Props extends cdk.StackProps {
   database: rds.DatabaseInstance;
-  databaseName: string;
   vpc: ec2.Vpc;
   rootUserSecret: secrets.Secret;
 }
@@ -50,7 +49,7 @@ export class ApiStack extends cdk.Stack {
       timeout: cdk.Duration.seconds(30),
       memorySize: 512,
       environment: {
-        DATABASE_SECRET_ARN: props.database.secret?.secretFullArn || '',
+        DATABASE_SECRET_JSON: props.rootUserSecret.secretValue.unsafeUnwrap(),
       },
     };
 
@@ -76,7 +75,6 @@ export class ApiStack extends cdk.Stack {
       }),
     });
     this.props.database.grantConnect(l);
-    this.props.rootUserSecret.grantRead(l);
 
     return new apigw.LambdaIntegration(l);
   }

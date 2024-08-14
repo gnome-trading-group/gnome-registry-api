@@ -9,7 +9,6 @@ const app = new cdk.App();
 const db = new DatabaseStack(app, 'DatabaseStack', {});
 new ApiStack(app, 'ApiStack', {
   database: db.database,
-  databaseName: db.databaseName,
   vpc: db.vpc,
   rootUserSecret: db.rootUserSecret,
 });
